@@ -1,0 +1,14 @@
+# API documentation for the Google service access
+openapi: 3.0.0
+# define the info about the 
+info:
+  title: API for the google authentication and access all api's 
+  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 1.0.0
+  contact:
+    email: xyz.developer.com
+  license:
+    name: Apache 2.0
+    url:  "http://localhost:3000"
+servers:
+  - url: http://localhost:3000
