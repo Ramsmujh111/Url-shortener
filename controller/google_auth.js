@@ -17,7 +17,7 @@ exports.profile = async (req, res) =>{
     res.render('profile' , {user:req.user});
 }
 
-exports.logOut = async (req, res) => {
+exports.logout = async (req, res) => {
     try {
         let userId = JSON.parse(JSON.stringify(req.session));
         const userFindById = await User.findById(userId.passport.user);

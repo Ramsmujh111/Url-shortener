@@ -10,5 +10,5 @@ routes.get('/login' ,passport.authenticate('google' , {
 }));
 routes.get('/redirect' , passport.authenticate('google') ,googleController.redirect);
 routes.get('/profile', authCheck , googleController.profile);
-routes.get('/logout' , googleController.logOut);
+routes.get('/logout' , googleController.logout);
 module.exports = routes;

@@ -9,6 +9,7 @@ const urlSchema = new mongoose.Schema({
         default:Date.now
     },
     expire_at:{
+        type:String,
         default:false,
     },
     user:{

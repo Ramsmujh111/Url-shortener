@@ -9,6 +9,7 @@ const passportSetUp = require('./service/passport');
 const passport = require('passport');
 const cookiesSession = require('cookie-session');
 const NodeScheduler = require('./service/scheduler')
+const error_404 = require('./routes/error_404');
 const YAML = require('yamljs');
 const swaggerjsdoc = YAML.load('./Openapi.yaml');
 const swagger_ui = require("swagger-ui-express");
@@ -20,8 +21,7 @@ app.set('view engine' , 'ejs');
 // body parser
 app.use(express.json());
 // start the scheduler
-NodeScheduler.sendMailAllUser();
-NodeScheduler.RemoveUrl();
+NodeScheduler.Scheduler();
 // // doc -implantation's
 app.use("/api/docs", swagger_ui.serve, swagger_ui.setup(swaggerjsdoc));
 // scheduler.stop();
@@ -42,6 +42,9 @@ app.use('/Google/auth' , googleRoutes);
 app.use('/' , redirectUrlRoutes);
 // url shorter middleware
 app.use('/api/url',urlRoutes);
+
+// error routes handler
+app.use(error_404);
 
 
 // Database connectivity 

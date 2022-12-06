@@ -12,3 +12,292 @@ info:
     url:  "http://localhost:3000"
 servers:
   - url: http://localhost:3000
+
+# body schema that reference the register form
+
+components:
+  schemas:
+   userSchema:
+      type: object
+      properties:
+        userName:
+           type: string
+           required: true
+           description: name of user
+           example: xyx example
+        email:
+           type: string
+           required: true
+           description: email of user
+           example: xyz@gmail.com
+        googleId:
+           type: string
+           required: true
+           description: google generated id
+           example: googleId123Example
+        photoURl:
+           type: string
+           description: user google image url
+           example: https://google/auth/image/drive
+   shortenerSchema:
+        type: object
+        properties:
+          urlCode:
+           type: string
+           description: url shortener generator code 
+           example: jfadsfkadhadd           
+          longUrl:
+           type: string
+           description: long url  
+           example: Long url          
+          shortUrl:
+           type: string
+           description: short url generate
+           example: localhost://3000/shortener/code           
+          create_At:
+           type: string
+           description: created_at date 
+           example: date           
+          expire_at:
+           type: string
+           description: expire_at date 
+           example: date           
+          user:
+           type: object string
+           description: user id 
+           example: hdkjshkeuieiw89397533 
+   successMessage:
+        type: object
+        properties:
+          status:
+           type: boolean
+           description: return true of false 
+           example: true           
+          message:
+           type: string
+           description: success message  
+           example: success message          
+               
+# url shortener for all user can access
+paths:
+  /api/url/shorten:
+     post:
+       summary: url shortener 
+       tags: [URL_SHORTENER]
+       description: short shortener
+       requestBody:
+            description: enter the your long url
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   longUrl:
+                      type: string
+                      required: true
+                      description: enter the url 
+                      example: xyz@gmail.com
+       parameters:
+         - in: header
+           name: token
+           schema:
+             type: string
+             required: true
+       responses:
+         200:
+           description: url shortener 
+           content:
+             application/json:
+                schema:
+                  $ref: '#/components/schemas/shortenerSchema'
+         401:
+           description: unauthorize
+           content:
+             application/json:
+                schema:
+                  type: object
+                  properties:
+                   status:
+                     type: boolean
+                     description: set the value true of false
+                     example: false
+                   message:
+                     type: string
+                     description: unauthorize token
+                     example: unauthorize
+# delete the url shortener                     
+  /api/url/delete/{id}:
+     delete:
+       summary: delete url shortener 
+       tags: [URL_SHORTENER]
+       description: delete url shortener
+       parameters:
+           - in: path
+             name: id
+             required: true
+             schema:
+               type: string
+               required: true
+               example: expi948_3fdj_
+           - in: header
+             name: token
+             required: true
+             schema:
+              type: string
+              required: true
+       responses:
+             200:
+              description: url shortener deleted
+              content:
+                application/json:
+                   schema:
+                     type: object
+                     properties:
+                      status:
+                        type: boolean
+                        description: set the value true of false
+                        example: true
+                      message:
+                        type: string
+                        description: deleted the user shortener successfully
+                        example: url shortener deleted
+             400:
+               description: Bad Request
+             500:
+              description: internal server error
+              content:
+                application/json:
+                   schema:
+                     type: object
+                     properties:
+                      status:
+                        type: boolean
+                        description: set the value true of false
+                        example: false
+                      message:
+                        type: string
+                        description: internal server error
+                        example: internal server error
+             401:
+              description: unauthorize
+              content:
+                application/json:
+                   schema:
+                     type: object
+                     properties:
+                      status:
+                        type: boolean
+                        description: set the value true of false
+                        example: false
+                      message:
+                        type: string
+                        description: unauthorize token
+                        example: unauthorize
+# user update the url shortener
+  /api/update/{id}:
+    put:
+      summary: update the url shortener 
+      tags: [URL_SHORTENER]
+      description: update url shortener
+      requestBody:
+           description: update any field which you wanna
+           required: true
+           content:
+             application/json:
+                schema:
+                  $ref: '#/components/schemas/shortenerSchema'
+      parameters:
+         - in: path
+           name: id
+           required: true
+           schema:
+             type: string
+             required: true
+             example: expi948_3fdj_
+         - in: header
+           name: token
+           required: true
+           schema:
+            type: string
+            required: true                                                                    
+      responses:
+           200:
+              description: updated user fields 
+              content:
+                application/json:
+                   schema:
+                     $ref: '#/components/schemas/shortenerSchema'
+           400:
+              description: Bad Request
+           500:
+             description: internal server error
+             content:
+               application/json:
+                  schema:
+                    type: object
+                    properties:
+                     status:
+                       type: boolean
+                       description: set the value true of false
+                       example: false
+                     message:
+                       type: string
+                       description: internal server error
+                       example: internal server error
+# get the all user which user has created
+  /api/url/url/{id}:
+    get:
+      summary: get all urls which user has created 
+      tags: [URL_SHORTENER]
+      description: get url shortener
+      parameters:
+         - in: path
+           name: id
+           required: true
+           schema:
+             type: string
+             required: true
+             example: expi948_3fdj_
+         - in: header
+           name: token
+           required: true
+           schema:
+            type: string
+            required: true
+      responses:
+           200:
+              description: updated user fields 
+              content:
+                application/json:
+                   schema:
+                     $ref: '#/components/schemas/shortenerSchema'
+           400:
+              description: Bad Request
+           500:
+             description: internal server error
+             content:
+               application/json:
+                  schema:
+                    type: object
+                    properties:
+                     status:
+                       type: boolean
+                       description: set the value true of false
+                       example: false
+                     message:
+                       type: string
+                       description: internal server error
+                       example: internal server error
+
+
+
+     
+
+   
+    
+         
+
+
+       
+      

@@ -1,76 +1,102 @@
-const nodeScheduler = require('node-cron');
-const User = require('../models/Users');
-const Logger = require('./winston');
-const Url = require('../models/Url');
-const mailSender = require('../config/mailSender');
+const nodeScheduler = require("node-cron");
+const User = require("../models/Users");
+const Logger = require("./winston");
+const Url = require("../models/Url");
+const mailSender = require("../config/mailSender");
 /**
- * 
- * @param {*} users 
+ *
+ * @param {*} users
  * @description send the email all users one by one
  */
-const configEmail = async (users) =>{
-     try {
-        users.forEach((email) =>{
-            const mailOptions = {
-                from:'URL Shortener',
-                to:email,
-                subject:'alert for remove url shortener',
-                html:'<p> you url will be removed with in a 1 hour <p>'
-            }
-            mailSender.sendMail(mailOptions  , (err , info)=>{
-                if(err){
-                   return Logger.error(`${err.message} | configEmail`);
-                }
-            });
-        } )
-        Logger.info(`mail has been send`);
-     } catch (error) {
-        Logger.error(`${error.message} | ${configEmail.name}`);
-        
-     }
-}
+const sendEmailUser = async (userId) => {
+  console.log(userId);
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return Logger.error(
+        `with this id user does't exist | ${sendEmailUser.name}`
+      );
+    }
+    // set the mail options
+    const mailOptions = {
+      from: "URL Shortener",
+      to: user.email,
+      subject: "alert for remove url shortener",
+      html: "<p> you url will be removed with in a 1 hour <p>",
+    };
+    mailSender.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        return Logger.error(err.message);
+      }
+      Logger.info(`Email has been send | ${info.messageId}`);
+    });
+  } catch (error) {
+    Logger.error(`${error.message}  | ${sendEmailUser.name}`);
+  }
+};
 
 /**
  * @descriptions set the scheduler for the mail sender
  */
-const sendMailAllUser = () =>{
-    try {
-        nodeScheduler.schedule(`1 * */22 * * *` , async ()=>{
-            // find the all user from the database and send the email all off them
-            const usersData = await User.find({})
-            if(!usersData){
-                return Logger.error(`Users Does not founds | ${sendMailAllUser.name}`);
-            }
-            // create the empty array for store the all users email
-            let email = [];
-            usersData.map((key) => {
-               email.push(key.email)
-            })
-            // call the config method
-            configEmail(email);
-        })
-    } catch (error) {
-        Logger.error(`Internal server Error | ${sendMailAllUser.name}`);
-        
-    }
-}
-
-const RemoveUrl = () =>{
-    nodeScheduler.schedule(`1 * */23 * * *` , async () =>{
-        try {
-            const url = await Url.deleteMany({});
-            console.log(url);
-            Logger.info(`Url has been removed`);
-            
-        } catch (error) {
-            Logger.error(`Internal server Error | ${RemoveUrl.name}`)
-            
+const Scheduler = () => {
+  try {
+    nodeScheduler.schedule(`*/1 * * * * *`, async () => {
+      // find the all user from the database and send the email all off them
+      const urlDetails = await Url.find({});
+      if (!urlDetails) {
+        return Logger.error(`Url Does not founds | ${Scheduler.name}`);
+      }
+      // check the url expiration time
+      const exp_time = urlDetails.map((key) => {
+        return {
+          expire_at: key.expire_at,
+          userId: key.user,
+        };
+      });
+      // set the mail before the 1 hours
+      for (let URL_details of exp_time) {
+        const exp_date = new Date(URL_details.expire_at);
+        exp_date.setHours(exp_date.getHours() - 1);
+        // check before the deletion time is match current time
+        if (
+          exp_date.getSeconds() === new Date().getSeconds() &&
+          exp_date.getHours() === new Date().getHours() &&
+          exp_date.getMinutes() === new Date().getMinutes()
+        ) {
+          // call the sendMail for user
+          sendEmailUser(URL_details.userId);
         }
-    })
-}
-
-module.exports = {
-    sendMailAllUser,
-    RemoveUrl,
+      }
+      // for removing the url
+      for (let url of exp_time) {
+        const exp_time = new Date(url.expire_at);
+        if (
+          exp_time.getMinutes() === new Date().getMinutes() &&
+          exp_time.getSeconds() === new Date().getSeconds() &&
+          exp_time.getHours() === new Date().getHours()
+        ) {
+          RemoveUrl(url.expire_at);
+        }
+      }
+    });
+  } catch (error) {
+    Logger.error(`Internal server Error | ${Scheduler.name}`);
+  }
 };
 
+const RemoveUrl = async (exp_date) => {
+  try {
+    // find the url in data base and remove
+    const exp_url = await Url.findOneAndDelete(exp_date);
+    if (!exp_url) {
+      return Logger.error(`expire url date not match  | ${RemoveUrl.name}`);
+    }
+    Logger.info(`Url successfully removed`);
+  } catch (error) {
+    Logger.error(`${error.message}  | ${RemoveUrl.name}`);
+  }
+};
+
+module.exports = {
+  Scheduler,
+};

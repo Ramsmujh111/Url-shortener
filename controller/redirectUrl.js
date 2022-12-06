@@ -27,7 +27,7 @@ exports.redirectUrl = async (req,res) =>{
             return res.redirect(url.longUrl);
         }else{
             // return the Error message like url not founds
-            Logger.error(`return the error No url founds`)
+            Logger.error(`return the error No url founds | ${this.redirectUrl.name}`);
             return res.status(404).json({
                 status:false,
                 message:`No url founds`

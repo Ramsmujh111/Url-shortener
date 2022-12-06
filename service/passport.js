@@ -14,7 +14,7 @@ passport.serializeUser((user , done) =>{
 passport.deserializeUser(async(id , done) =>{
     const existUsers = await User.findById(id);
     if(!existUsers){
-       return Logger.error(`Id does not exist`)
+       return Logger.error(`Id does not exist | deserializeUser`)
     }
     done(null , existUsers)
 })
