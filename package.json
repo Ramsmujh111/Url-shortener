@@ -4,7 +4,7 @@
   "description": "this is url shortner",
   "main": "index.js",
   "scripts": {
-    "run": "nodemon app.js",
+    "dev": "nodemon app.js",
     "start-pro": "node app.js"
   },
   "repository": {
@@ -22,6 +22,7 @@
     "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
+    "joi": "^17.7.0",
     "mongoose": "^6.7.3",
     "node-cron": "^3.0.2",
     "nodemailer": "^6.8.0",

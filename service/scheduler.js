@@ -40,7 +40,7 @@ const sendEmailUser = async (userId) => {
  */
 const Scheduler = () => {
   try {
-    nodeScheduler.schedule(`*/1 * * * * *`, async () => {
+    nodeScheduler.schedule(`0 * */1 * * *`, async () => {
       // find the all user from the database and send the email all off them
       const urlDetails = await Url.find({});
       if (!urlDetails) {
@@ -55,28 +55,19 @@ const Scheduler = () => {
       });
       // set the mail before the 1 hours
       for (let URL_details of exp_time) {
-        const exp_date = new Date(URL_details.expire_at);
-        exp_date.setHours(exp_date.getHours() - 1);
-        // check before the deletion time is match current time
-        if (
-          exp_date.getSeconds() === new Date().getSeconds() &&
-          exp_date.getHours() === new Date().getHours() &&
-          exp_date.getMinutes() === new Date().getMinutes()
-        ) {
-          // call the sendMail for user
-          sendEmailUser(URL_details.userId);
+        const before_exp = new Date(URL_details.expire_at);
+        before_exp.setHours(before_exp.getHours() - 1);
+        
+        // console.log(new Date(URL_details.expire_at).getTime() + 'expTime');
+        // send the email before exp time to 1 hours 
+        if(before_exp.getHours() <= new Date().getHours() &&  new Date().getHours() <= new Date(URL_details.expire_at).getHours()){
+             sendEmailUser(URL_details.userId);
         }
-      }
-      // for removing the url
-      for (let url of exp_time) {
-        const exp_time = new Date(url.expire_at);
-        if (
-          exp_time.getMinutes() === new Date().getMinutes() &&
-          exp_time.getSeconds() === new Date().getSeconds() &&
-          exp_time.getHours() === new Date().getHours()
-        ) {
-          RemoveUrl(url.expire_at);
+        // after remove url
+        if(new Date(URL_details.expire_at).getHours() >= new Date().getHours()){
+               RemoveUrl(URL_details.expire_at)
         }
+
       }
     });
   } catch (error) {

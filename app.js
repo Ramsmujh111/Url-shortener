@@ -10,6 +10,7 @@ const passport = require('passport');
 const cookiesSession = require('cookie-session');
 const NodeScheduler = require('./service/scheduler')
 const error_404 = require('./routes/error_404');
+const handleFailure = require('./config/handleFailures');
 const YAML = require('yamljs');
 const swaggerjsdoc = YAML.load('./Openapi.yaml');
 const swagger_ui = require("swagger-ui-express");
@@ -24,7 +25,7 @@ app.use(express.json());
 NodeScheduler.Scheduler();
 // // doc -implantation's
 app.use("/api/docs", swagger_ui.serve, swagger_ui.setup(swaggerjsdoc));
-// scheduler.stop();
+
 // cookie session 
 app.use(cookiesSession({
     name: 'session',
@@ -43,11 +44,13 @@ app.use('/' , redirectUrlRoutes);
 // url shorter middleware
 app.use('/api/url',urlRoutes);
 
-// error routes handler
+// error routes for unknown endpoint
 app.use(error_404);
 
 
-// Database connectivity 
+// unhandled rejection 
+handleFailure();
+
 mongoose.connect(process.env.MONGO_URL)
 .then((result) =>{
     Logger.info(`Data base is connected successfully`);
@@ -58,4 +61,5 @@ mongoose.connect(process.env.MONGO_URL)
 .catch((err) =>{
     console.log(err.message);
 })
+
 

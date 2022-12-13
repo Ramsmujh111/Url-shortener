@@ -3,18 +3,18 @@ const shortId = require("shortid");
 const Url = require("../models/Url");
 const Logger = require("../service/winston");
 const User = require("../models/Users");
-
+const {validateMongooseObjectId} = require('../middleware/validation');
 /**
  *
  * @param {object} req
  * @param {object} res
- * @route POST /api/url/shorten
+ * @route POST /api/url
  * @desc  Create short URL
  * @returns return the shorted url from long url
  */
 exports.shortener = async (req, res) => {
   try {
-    const longUrl = req.body.longUrl;
+    const longUrl = req.body.longUrl
     const baseUrl = process.env.BASE_URL;
     // check base url is valid url
     if (!validUrl.isUri(baseUrl)) {
@@ -66,6 +66,12 @@ exports.shortener = async (req, res) => {
           url,
         });
       }
+    }else{
+      Logger.error(`wrong Url | ${this.shortener.name}`);
+      res.status(400).json({
+        status:false,
+        message:`Please Enter the valid Url`
+      })
     }
   } catch (error) {
     Logger.error(error.message);
@@ -80,6 +86,7 @@ exports.shortener = async (req, res) => {
  * @description user find by url code and delete && find by id and deleted
  * @param {object} req
  * @param {object} res
+ * @routes /api/url/:id
  * @param {string} urlCode url shouter url code
  * @param {string} id url shortener id find by id and delete the url
  * @return message url has been deleted
@@ -87,9 +94,18 @@ exports.shortener = async (req, res) => {
 exports.delete_Url = async (req, res) => {
   try {
     const url_code = req.query.code;
+    // validate the object id 
+    const validatedId = validateMongooseObjectId(req.params.id);
+    if(!validatedId){
+      Logger.error(`Invalid Object id | ${this.delete_Url.name}`);
+      return res.status(400).json({
+        status:false,
+        message:`Invalid Object id`
+      })
+    }
     const url = url_code
       ? await Url.findOneAndDelete({ urlCode: url_code })
-      : await Url.findByIdAndRemove(req.params.id);
+      : await Url.findByIdAndRemove(validatedId);
     // check if url is exist
     if (!url) {
       Logger.error(`Url code or id does not match | ${this.delete_Url.name}`);
@@ -116,6 +132,7 @@ exports.delete_Url = async (req, res) => {
  * @description find by id and update the url
  * @param {object} req
  * @param {object} res
+ * @routes /api/url/:id
  * @param {string} id find by params id and update the existing url shortener
  * @return return the updated url shortener
  */
@@ -123,30 +140,40 @@ exports.delete_Url = async (req, res) => {
 exports.update_Url = async (req, res) => {
   try {
     // extract data from the params id
-    const paramsId = req.params.id;
-    const updatedUrl = await Url.findByIdAndUpdate(
-        paramsId,
-      {
-        $set: req.body,
-      },
-      { new: true }
-    );
-    // if url id does not match or something return error
-    if(!updatedUrl){
-        Logger.error(`user id does not match with existing data | ${this.update_Url.name}`);
-        return res.status(404).json({
-            status:false,
-            message:`user id does not match with database ids`
-        })
+    const validatedId = validateMongooseObjectId(req.params.id);
+    if(!validatedId){
+      Logger.error(`Invalid id`);
+      return res.status(404).json({
+        status:false,
+        message:`Invalid Id`
+      })
     }
-    // Logger success message
-    Logger.info(`url successfully updated`);
-    // send the response
-    res.status(200).json({
-        status:true,
-        message:`Url successfully updated`,
-        updatedUrl
-    })
+    Url.findByIdAndUpdate(paramsId , 
+      {
+        $set: req.body
+      },
+      {
+        new:true
+      },
+      (errUpdate , result) =>{
+        // if any err during update
+        if(errUpdate){
+            Logger.error(`${errUpdate.message} | update_Url`)
+            return res.status(400).json({
+            status:false,
+            message:errUpdate.message
+          })
+        }
+        // return the successfully updated result
+       if(result){
+        Logger.info(`Update Url successfully`);
+        res.status(200).json({
+          status:true,
+          message:`successfully updated`,
+          result
+        })
+       }
+      })
   } catch (error) {
      Logger.error(`${error.message} | ${this.update_Url.name}`);
      res.status(500).json({
@@ -159,13 +186,23 @@ exports.update_Url = async (req, res) => {
  * @description find the all url which is created by one user
  * @param {object} req
  * @param {object} res
+ * @routes /api/url
  * @return all url shortener created by one users
  */
 exports.getUrl = async (req, res) =>{
     try {
-        const allUrl = await Url.find({user:req.params.id});
-        console.log(req.params.id);
+        const token = req.headers["token"]
+        const userId = await User.findOne({accessToken:token});
         // check if userId is does not exist
+        if(!userId){
+          Logger.error(`user Id does't not present`);
+          return res.status(404).json({
+            status:false,
+            message:`user Token does not match`
+          })
+        }
+        // find the all user url 
+        const allUrl = await Url.find({user:userId._id});
         if(!allUrl){
             Logger.error(`User id does not match | ${this.getUrl.name}`);
             return res.status(404).json({
@@ -188,3 +225,45 @@ exports.getUrl = async (req, res) =>{
         
     }
 }
+
+/**
+ * @description find the url by id
+ * @param {object} req
+ * @param {object} res
+ * @param {string} id  url shortener id 
+ * @routes /api/url/:id
+ * @method get
+ * @return find by id and return the url shortener
+ */
+exports.findById = async (req, res) =>{
+  try {
+      const validatedId = validateMongooseObjectId(req.params.id);
+      const urlDetails = await Url.findById(req.params.id);
+      // check the url Details is available 
+      if(!urlDetails){
+        Logger.error(`url id does not exist`);
+        return res.status(404).json({
+          status:false,
+          message:`url id does not exist`
+        })
+      }
+      // send the response 
+      Logger.info(`successfully get the url id`);
+      res.status(200).json({
+        status:false,
+        message:`url details`,
+        urlDetails,
+      })
+  } catch (error) {
+    Logger.error(`${error.message} | ${this.findById.name}`);
+    res.status(500).json({
+      status:false,
+      message:error.message
+    })
+    
+  }
+}
+
+
+
+

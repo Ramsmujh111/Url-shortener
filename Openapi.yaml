@@ -80,8 +80,8 @@ components:
                
 # url shortener for all user can access
 paths:
-  /api/url/shorten:
-     post:
+  /api/url:
+    post:
        summary: url shortener 
        tags: [URL_SHORTENER]
        description: short shortener
@@ -126,8 +126,44 @@ paths:
                      type: string
                      description: unauthorize token
                      example: unauthorize
+# # get the all user which user has created                     
+    get:
+      summary: get all urls which user has created 
+      tags: [URL_SHORTENER]
+      description: get url shortener
+      parameters:
+         - in: header
+           name: token
+           required: true
+           schema:
+            type: string
+            required: true
+      responses:
+           200:
+              description: updated user fields 
+              content:
+                application/json:
+                   schema:
+                     $ref: '#/components/schemas/shortenerSchema'
+           400:
+              description: Bad Request
+           500:
+             description: internal server error
+             content:
+               application/json:
+                  schema:
+                    type: object
+                    properties:
+                     status:
+                       type: boolean
+                       description: set the value true of false
+                       example: false
+                     message:
+                       type: string
+                       description: internal server error
+                       example: internal server error
 # delete the url shortener                     
-  /api/url/delete/{id}:
+  /api/url/{id}:
      delete:
        summary: delete url shortener 
        tags: [URL_SHORTENER]
@@ -195,19 +231,23 @@ paths:
                         description: unauthorize token
                         example: unauthorize
 # user update the url shortener
-  /api/update/{id}:
-    put:
-      summary: update the url shortener 
-      tags: [URL_SHORTENER]
-      description: update url shortener
-      requestBody:
-           description: update any field which you wanna
+     put:
+        summary: update the url shortener 
+        tags: [URL_SHORTENER]
+        description: update url shortener
+        requestBody:
+           description: update the longUrl
            required: true
            content:
              application/json:
                 schema:
-                  $ref: '#/components/schemas/shortenerSchema'
-      parameters:
+                    type: object
+                    properties:
+                     longUrl:
+                       type: string
+                       description: set the value true of false
+                       example: put here your long url
+        parameters:
          - in: path
            name: id
            required: true
@@ -221,7 +261,7 @@ paths:
            schema:
             type: string
             required: true                                                                    
-      responses:
+        responses:
            200:
               description: updated user fields 
               content:
@@ -245,10 +285,11 @@ paths:
                        type: string
                        description: internal server error
                        example: internal server error
+
+    
 # get the all user which user has created
-  /api/url/url/{id}:
-    get:
-      summary: get all urls which user has created 
+     get:
+      summary: get url by id
       tags: [URL_SHORTENER]
       description: get url shortener
       parameters:
