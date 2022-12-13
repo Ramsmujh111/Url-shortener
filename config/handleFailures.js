@@ -1,3 +1,4 @@
+// handle the unexceptional error
 function handleFailure(){
     process.on("uncaughtException" , (err) =>{
         console.log(`Unhandled Rejection! Shutting down....`);
