@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 
 /**
+ * @description Nodemailer configuration
  * Email configuration
  */
 let mailTransporter = nodemailer.createTransport({
