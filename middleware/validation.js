@@ -7,7 +7,7 @@ const ValidateUser = Joi.object({
     email: Joi.string()
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
 })
-
+// validate MongooseObject id
 const validateMongooseObjectId = (parameter) =>{
     return Joi.string()
       .regex(/^[0-9a-fA-F]{24}$/, "Valid Id")
