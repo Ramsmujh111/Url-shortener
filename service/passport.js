@@ -21,7 +21,7 @@ passport.deserializeUser(async(id , done) =>{
 
 passport.use(
   new GoogleStrategy({
-    // options for the
+    // options for the Google Credentials
     callbackURL:process.env.REDIRECT_URI,
     clientID:process.env.CLIENT_ID,
     clientSecret:process.env.CLIENT_SECRET,
