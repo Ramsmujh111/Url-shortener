@@ -5,10 +5,6 @@ exports.HomePage = async (req, res) =>{
     res.render('login');
 }
 
-exports.login  = async (req, res) =>{
-    res.render('login')
-}
-
 exports.redirect = async (req, res) =>{
   res.redirect('/Google/auth/profile/');
 }
