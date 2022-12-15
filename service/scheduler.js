@@ -58,7 +58,6 @@ const Scheduler = () => {
         const before_exp = new Date(URL_details.expire_at);
         before_exp.setHours(before_exp.getHours() - 1);
         
-        // console.log(new Date(URL_details.expire_at).getTime() + 'expTime');
         // send the email before exp time to 1 hours 
         if(before_exp.getHours() <= new Date().getHours() &&  new Date().getHours() <= new Date(URL_details.expire_at).getHours()){
              sendEmailUser(URL_details.userId);
