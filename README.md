@@ -1,6 +1,6 @@
-# Project name is Google authentication 
- -> This project content the Google authentication and url shortener 
- -> url shortener has curd api's features
+#  Google authentication 
+ 1. This project content the Google authentication and url shortener 
+ 2. url shortener has curd api's features
 
 ## Environment Variables
 
