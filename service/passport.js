@@ -56,7 +56,6 @@ passport.use(
     }  
    } catch (error) {
       Logger.error(error.message);  
-      console.log('error is here');
    }
   })
 )
