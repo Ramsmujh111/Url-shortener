@@ -28,12 +28,12 @@ passport.use(
     
   },async (accessToken , refreshToken , profile , done) =>{
     // passport callback functions
-    console.log(accessToken);
+    console.log(`accessToken is ` + accessToken);
    try {
     // check if user already exists in our db
     const existUser = await User.findOne({googleId:profile.id})
     if(existUser){
-        Logger.info('user is \n');
+        Logger.info('user is save in database');
         // update the token 
         existUser.accessToken = accessToken;
         existUser.save();

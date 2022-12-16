@@ -40,6 +40,9 @@ const sendEmailUser = async (userId) => {
  */
 const Scheduler = () => {
   try {
+    // scheduler represent the time Like this -> seconds , minute , hours , day , week 
+    // i'll set the cron-job will that be run after the 1 hours 
+    // and every hours cron check 
     nodeScheduler.schedule(`0 * */1 * * *`, async () => {
       // find the all user from the database and send the email all off them
       const urlDetails = await Url.find({});
@@ -55,7 +58,9 @@ const Scheduler = () => {
       });
       // set the mail before the 1 hours
       for (let URL_details of exp_time) {
+         // create a exp_variable
         const before_exp = new Date(URL_details.expire_at);
+        // set the expire time to  before 1 hours 
         before_exp.setHours(before_exp.getHours() - 1);
         
         // send the email before exp time to 1 hours 
@@ -74,6 +79,10 @@ const Scheduler = () => {
   }
 };
 
+/**
+ * @description url remove functionally 
+ * @param {string} exp_date 
+ */
 const RemoveUrl = async (exp_date) => {
   try {
     // find the url in data base and remove

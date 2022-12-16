@@ -3,7 +3,7 @@ const shortId = require("shortid");
 const Url = require("../models/Url");
 const Logger = require("../service/winston");
 const User = require("../models/Users");
-const {validateMongooseObjectId} = require('../middleware/validation');
+const {validateMongooseObjectId , isValidURL} = require('../middleware/validation');
 /**
  *
  * @param {object} req
@@ -139,18 +139,27 @@ exports.delete_Url = async (req, res) => {
 
 exports.update_Url = async (req, res) => {
   try {
-    // extract data from the params id
+    // validate the url
+    const longUrl = isValidURL(req.body.longUrl);
+    if(!longUrl){
+        Logger.error(`Please enter the valid url | update_Url`);
+        return res.status(404).json({
+          status:false,
+          message:`Please enter the valid url`
+        })
+    }
+   // validate the mongoose is 
     const validatedId = validateMongooseObjectId(req.params.id);
     if(!validatedId){
-      Logger.error(`Invalid id`);
+      Logger.error(`Invalid id | ${this.update_Url.name}`);
       return res.status(404).json({
         status:false,
         message:`Invalid Id`
       })
     }
-    Url.findByIdAndUpdate(paramsId , 
+    Url.findByIdAndUpdate(validatedId.value, 
       {
-        $set: req.body
+        $set: longUrl
       },
       {
         new:true
@@ -166,7 +175,7 @@ exports.update_Url = async (req, res) => {
         }
         // return the successfully updated result
        if(result){
-        Logger.info(`Update Url successfully`);
+        Logger.info(`Update Url successfully | ${this.update_Url.name}`);
         res.status(200).json({
           status:true,
           message:`successfully updated`,
@@ -195,7 +204,7 @@ exports.getUrl = async (req, res) =>{
         const userId = await User.findOne({accessToken:token});
         // check if userId is does not exist
         if(!userId){
-          Logger.error(`user Id does't not present`);
+          Logger.error(`user Id does't not exist`);
           return res.status(404).json({
             status:false,
             message:`user Token does not match`
