@@ -49,10 +49,7 @@ passport.use(
     })
     // save the data in database 
     if(await newUser.save()){
-        console.log({
-            message:'new user created',
-            newUser,
-        });
+        console.log({message:'new user created' });
         done(null , newUser);
     }else{
         Logger.error(`database creation error`);
