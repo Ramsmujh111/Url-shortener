@@ -1,0 +1,221 @@
+{
+	"info": {
+		"_postman_id": "d5b0e8ca-a6e9-4064-9f5e-d19e22545422",
+		"name": "Url-shortener",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20467442"
+	},
+	"item": [
+		{
+			"name": "GET ALL User URL",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "ya29.a0AeTM1ieLU8myJdGv19KkLpyRf792j2pzO_F6m_GzFUf0m3_eQakc1Q4H1TgBozMby99kIrHbW7BJY-Qp-YHhyt_Sxr1Gx78jYaNlEfHtCKOKqmy0g1ndAdZ4LnVI1Hug0Hdd2L0S3ZMtDglnlCWQRoRHxnjLSwaCgYKAUASARESFQHWtWOm1xZNCjcyQa0ij29V8mxtig0165",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/url",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"url"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET user url by url id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "ya29.a0AX9GBdUEQPs2cGdkROcMXSCk4W0ZFhj47_wKupldygJaHAI0SUx0WmnolkykvzLJ9c61C7dYuBE-q0B_mASY5jBV2pAmA3uj0Rcx6VDWrKpKN9JjWaLzi-r6mI-OKVOXqEDcq76fIOmqgjR3czlTQPy4QQ3vbAaCgYKARESARESFQHUCsbCBOZbFFfxDj7BG8ooq_mMrQ0165",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{Url}}/api/url/639c86d076826cbba758abfb",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"url",
+						"639c86d076826cbba758abfb"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UrlShortener",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "ya29.a0AeTM1ieLU8myJdGv19KkLpyRf792j2pzO_F6m_GzFUf0m3_eQakc1Q4H1TgBozMby99kIrHbW7BJY-Qp-YHhyt_Sxr1Gx78jYaNlEfHtCKOKqmy0g1ndAdZ4LnVI1Hug0Hdd2L0S3ZMtDglnlCWQRoRHxnjLSwaCgYKAUASARESFQHWtWOm1xZNCjcyQa0ij29V8mxtig0165",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"longUrl\":\"jdfhskdjgkskasfhkasfd\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/url",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"url"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "find by id and delete",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"value": "ya29.a0AeTM1ieLU8myJdGv19KkLpyRf792j2pzO_F6m_GzFUf0m3_eQakc1Q4H1TgBozMby99kIrHbW7BJY-Qp-YHhyt_Sxr1Gx78jYaNlEfHtCKOKqmy0g1ndAdZ4LnVI1Hug0Hdd2L0S3ZMtDglnlCWQRoRHxnjLSwaCgYKAUASARESFQHWtWOm1xZNCjcyQa0ij29V8mxtig0165",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"longUrl\":\"https://sequelize.org/docs/v6/core-concepts/model-instances/\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/url/639827a5edaee6aa38f81c17",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"url",
+						"639827a5edaee6aa38f81c17"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "find by id and update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "token",
+						"value": "ya29.a0AeTM1ieLU8myJdGv19KkLpyRf792j2pzO_F6m_GzFUf0m3_eQakc1Q4H1TgBozMby99kIrHbW7BJY-Qp-YHhyt_Sxr1Gx78jYaNlEfHtCKOKqmy0g1ndAdZ4LnVI1Hug0Hdd2L0S3ZMtDglnlCWQRoRHxnjLSwaCgYKAUASARESFQHWtWOm1xZNCjcyQa0ij29V8mxtig0165",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"longUrl\":\"https://sequelize.org/docs/v6/core-concepts/model-instances/\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/url/6390e57333025f99849dab0d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"url",
+						"6390e57333025f99849dab0d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Home routes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Url}}",
+					"host": [
+						"{{Url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
