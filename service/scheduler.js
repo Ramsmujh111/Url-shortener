@@ -80,7 +80,7 @@ const Scheduler = () => {
 };
 
 /**
- * @description url remove functionally 
+ * @description url remove functionality
  * @param {string} exp_date 
  */
 const RemoveUrl = async (exp_date) => {
