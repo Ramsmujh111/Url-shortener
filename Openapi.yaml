@@ -140,7 +140,7 @@ paths:
             required: true
       responses:
            200:
-              description: updated user fields 
+              description: get all users shorts urls
               content:
                 application/json:
                    schema:
@@ -308,7 +308,7 @@ paths:
             required: true
       responses:
            200:
-              description: updated user fields 
+              description: get url by id 
               content:
                 application/json:
                    schema:
