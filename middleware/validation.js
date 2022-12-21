@@ -15,15 +15,20 @@ const validateMongooseObjectId = (parameter) =>{
 }
 
 // validate the url 
-function isValidURL(validatedUrl) {
-    if(/^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/g.test(validatedUrl)) {
+function isValidURL(string) {
+    let url;
+    try {
+      url = new URL(string);
+      if(url.protocol === "http:" || url.protocol === "https:"){
          return {
-            longUrl:validatedUrl
-         };
-     } else {
-         return false;
-     }
- }
+            longUrl:url.href
+         }
+      }
+    } catch (_) {
+      return false;
+    }
+     
+  }
 
 module.exports = {
     ValidateUser,

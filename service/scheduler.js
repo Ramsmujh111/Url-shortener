@@ -41,7 +41,7 @@ const sendEmailUser = async (userId) => {
 const Scheduler = () => {
   try {
     // scheduler represent the time Like this -> seconds , minute , hours , day , week 
-    // i'll set the cron-job will that be run after the 1 hours 
+    // i'll set the cron-job will that be run every the 1 hours 
     // and every hours cron check 
     nodeScheduler.schedule(`0 * */1 * * *`, async () => {
       // find the all user from the database and send the email all off them
